@@ -1,0 +1,606 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Eda Aydın - Kurban Bayramı Özel Tebriki</title>
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Caveat:wght=700&family=Montserrat:wght=300;400;600;700&family=Playfair+Display:ital,wght=0,600;0,800;1,400&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: radial-gradient(circle at center, #064e3b 0%, #021e17 100%);
+            overflow: hidden;
+        }
+        .serif-font {
+            font-family: 'Playfair Display', serif;
+        }
+        .handwritten-font {
+            font-family: 'Caveat', cursive;
+        }
+        
+        /* Arka Plan Yıldız Parlamaları */
+        @keyframes twinkle {
+            0%, 100% { opacity: 0.2; transform: scale(0.8); }
+            50% { opacity: 0.8; transform: scale(1.2); }
+        }
+        .twinkle-star {
+            animation: twinkle 3s infinite ease-in-out;
+        }
+
+        /* Koyun Zıplama Animasyonu */
+        @keyframes sheep-bounce {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50% { transform: translateY(-15px) scale(0.95); }
+        }
+        .animate-sheep {
+            animation: sheep-bounce 2.5s infinite ease-in-out;
+        }
+
+        /* Koyun Kulak Sallama */
+        @keyframes ear-wiggle-left {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(-10deg); }
+        }
+        @keyframes ear-wiggle-right {
+            0%, 100% { transform: rotate(0deg); }
+            50% { transform: rotate(10deg); }
+        }
+        .ear-left {
+            transform-origin: top right;
+            animation: ear-wiggle-left 1.5s infinite ease-in-out;
+        }
+        .ear-right {
+            transform-origin: top left;
+            animation: ear-wiggle-right 1.5s infinite ease-in-out;
+        }
+
+        /* Giriş Düğmesi Parıltısı */
+        @keyframes gold-glow {
+            0%, 100% { box-shadow: 0 0 15px rgba(245, 158, 11, 0.4), inset 0 0 10px rgba(245, 158, 11, 0.2); }
+            50% { box-shadow: 0 0 35px rgba(245, 158, 11, 0.8), inset 0 0 20px rgba(245, 158, 11, 0.4); }
+        }
+        .btn-glow {
+            animation: gold-glow 2s infinite ease-in-out;
+        }
+
+        /* Yürüyen Kuzu Animasyonu (Zamanlayıcı Üzerinde) */
+        @keyframes sheep-walk {
+            0% { transform: scaleX(1); }
+            50% { transform: translateY(-2px); }
+            100% { transform: scaleX(1); }
+        }
+        .walking-sheep {
+            animation: sheep-walk 0.4s infinite alternate ease-in-out;
+        }
+
+        /* Müzik Butonu Dönüş Animasyonu */
+        @keyframes rotate-slow {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .spinning {
+            animation: rotate-slow 12s infinite linear;
+        }
+    </style>
+</head>
+<body class="h-screen w-screen flex items-center justify-center relative select-none">
+
+    <!-- Müzik Kontrol Butonu (Sağ Üst Köşede Sabit) -->
+    <div class="absolute top-4 right-4 z-50">
+        <button id="musicToggleBtn" onclick="toggleMusic()" class="bg-emerald-950/80 border border-amber-500/50 hover:border-amber-400 p-3 rounded-full text-amber-400 flex items-center justify-center shadow-lg backdrop-blur-sm transition-all active:scale-90" title="Müziği Aç/Kapat">
+            <svg id="musicIconOn" class="w-6 h-6 hidden spinning" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M9 18V5l12-2v13"></path>
+                <circle cx="6" cy="18" r="3"></circle>
+                <circle cx="18" cy="16" r="3"></circle>
+            </svg>
+            <svg id="musicIconOff" class="w-6 h-6" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M11 5L6 9H2v6h4l5 4V5z"></path>
+                <line x1="23" y1="9" x2="17" y2="15"></line>
+                <line x1="17" y1="9" x2="23" y2="15"></line>
+            </svg>
+        </button>
+    </div>
+
+    <!-- Gökyüzündeki Yıldızlar -->
+    <div class="absolute inset-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-10 left-10 w-2 h-2 bg-amber-200 rounded-full twinkle-star" style="animation-delay: 0.5s;"></div>
+        <div class="absolute top-24 right-20 w-3 h-3 bg-amber-300 rounded-full twinkle-star" style="animation-delay: 1.2s;"></div>
+        <div class="absolute bottom-20 left-15 w-2 h-2 bg-amber-100 rounded-full twinkle-star" style="animation-delay: 0.2s;"></div>
+        <div class="absolute bottom-40 right-10 w-4 h-4 bg-amber-400 rounded-full twinkle-star" style="animation-delay: 2s;"></div>
+        <div class="absolute top-1/2 left-1/4 w-2 h-2 bg-amber-200 rounded-full twinkle-star" style="animation-delay: 0.8s;"></div>
+    </div>
+
+    <!-- Hızlı Işık Patlaması Katmanı -->
+    <div id="lightBurst" class="absolute inset-0 bg-amber-100 rounded-full scale-0 opacity-0 pointer-events-none z-50 mix-blend-screen transition-all duration-700"></div>
+
+    <!-- ANA KUTU -->
+    <div class="z-10 max-w-lg w-11/12 text-center px-4 relative">
+
+        <!-- 1. EKRAN: BAYRAM MESAJINI AÇ (GİRİŞ) -->
+        <div id="startScreen" class="transition-all duration-700 transform scale-100 opacity-100 flex flex-col items-center">
+            
+            <!-- Eda Aydın İmzalı Başlık Süsü -->
+            <div class="mb-2">
+                <span class="handwritten-font text-3xl md:text-4xl text-amber-400 tracking-wider block drop-shadow-[0_2px_10px_rgba(245,158,11,0.4)]">
+                    Eda Aydın
+                </span>
+                <span class="text-xs tracking-[0.3em] uppercase text-amber-200/60 block -mt-1">Sunar</span>
+            </div>
+
+            <!-- Sevimli İnteraktif Koyun (Üzerine gelince kulağını sallar, tıklayınca meee der ve zıplar) -->
+            <div class="w-56 h-56 relative animate-sheep cursor-pointer my-4" id="introSheep" onclick="makeSheepJump()">
+                <svg viewBox="0 0 200 200" class="w-full h-full drop-shadow-[0_10px_20px_rgba(0,0,0,0.5)]">
+                    <!-- Ayaklar -->
+                    <rect x="75" y="140" width="12" height="30" rx="6" fill="#1e293b" />
+                    <rect x="113" y="140" width="12" height="30" rx="6" fill="#1e293b" />
+                    <rect x="90" y="140" width="12" height="32" rx="6" fill="#0f172a" />
+                    <rect x="102" y="140" width="12" height="32" rx="6" fill="#0f172a" />
+                    
+                    <!-- Bulut Gövde (Pofuduk Post) -->
+                    <g fill="#f8fafc">
+                        <circle cx="100" cy="100" r="45" />
+                        <circle cx="70" cy="90" r="30" />
+                        <circle cx="130" cy="90" r="30" />
+                        <circle cx="80" cy="120" r="32" />
+                        <circle cx="120" cy="120" r="32" />
+                        <circle cx="100" cy="130" r="32" />
+                        <circle cx="100" cy="75" r="30" />
+                    </g>
+
+                    <!-- Kafa (Yüz) -->
+                    <rect x="75" y="75" width="50" height="45" rx="22" fill="#fed7aa" />
+                    
+                    <!-- Sol Kulak -->
+                    <g class="ear-left">
+                        <path d="M78 80 C60 70, 55 90, 75 88" fill="#fdba74" stroke="#f97316" stroke-width="1.5" />
+                    </g>
+                    <!-- Sağ Kulak -->
+                    <g class="ear-right">
+                        <path d="M122 80 C140 70, 145 90, 125 88" fill="#fdba74" stroke="#f97316" stroke-width="1.5" />
+                    </g>
+
+                    <!-- Yanak Pembelikleri -->
+                    <circle cx="85" cy="102" r="5" fill="#f43f5e" opacity="0.4" />
+                    <circle cx="115" cy="102" r="5" fill="#f43f5e" opacity="0.4" />
+
+                    <!-- Sevimli Gözler -->
+                    <circle cx="90" cy="95" r="3" fill="#0f172a" />
+                    <circle cx="110" cy="95" r="3" fill="#0f172a" />
+                    <!-- Göz Parıltıları -->
+                    <circle cx="89" cy="94" r="1" fill="#ffffff" />
+                    <circle cx="109" cy="94" r="1" fill="#ffffff" />
+
+                    <!-- Ağız ve Burun -->
+                    <path d="M96 104 Q100 108 104 104" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none" />
+                    
+                    <!-- Alın Pofuduğu -->
+                    <circle cx="100" cy="70" r="16" fill="#f8fafc" />
+                    <circle cx="90" cy="72" r="12" fill="#f8fafc" />
+                    <circle cx="110" cy="72" r="12" fill="#f8fafc" />
+                </svg>
+                <!-- Koyunun konuşma balonu -->
+                <div class="absolute -top-4 -right-2 bg-amber-400 text-emerald-950 px-3 py-1 rounded-full font-bold text-xs shadow-md border-2 border-white animate-pulse">
+                    Mee! Tıkla!
+                </div>
+            </div>
+
+            <!-- Başlık -->
+            <h1 class="serif-font text-3xl md:text-4xl text-amber-100 font-extrabold tracking-wide mb-6 leading-snug">
+                <span class="text-amber-400">İyi Bayramlar!</span>
+            </h1>
+
+            <!-- Bayram Mesajını Aç Butonu -->
+            <button id="openBtn" onclick="startCelebration()" class="btn-glow bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-emerald-950 font-bold text-lg px-10 py-4.5 rounded-full border-2 border-amber-200 transition-all active:scale-95 duration-150 shadow-2xl tracking-wide flex items-center gap-3">
+                <span class="text-xl">💌</span> Bayram Mesajını Aç
+            </button>
+        </div>
+
+        <!-- 2. EKRAN: TEBRİK KARTI (Açıldığında Görünecek) -->
+        <div id="messageCard" class="hidden transition-all duration-1000 transform scale-50 opacity-0 bg-emerald-950/85 border-2 border-amber-400/70 rounded-3xl p-6 md:p-8 shadow-[0_0_60px_rgba(245,158,11,0.4)] backdrop-blur-md relative overflow-hidden">
+            
+            <!-- Köşe Dantel/Geleneksel Motif Süslemeleri -->
+            <div class="absolute top-3 left-3 text-amber-400/40 text-2xl">✿</div>
+            <div class="absolute top-3 right-3 text-amber-400/40 text-2xl">✿</div>
+            <div class="absolute bottom-3 left-3 text-amber-400/40 text-2xl">✿</div>
+            <div class="absolute bottom-3 right-3 text-amber-400/40 text-2xl">✿</div>
+
+            <div class="flex flex-col items-center">
+                <!-- Mini Kutlama Koyunu -->
+                <div class="w-32 h-32 mb-2 relative cursor-pointer" onclick="makeCardSheepJump()">
+                    <svg viewBox="0 0 200 200" class="w-full h-full" id="cardSheep">
+                        <!-- Ayaklar -->
+                        <rect x="78" y="140" width="10" height="25" rx="5" fill="#1e293b" />
+                        <rect x="112" y="140" width="10" height="25" rx="5" fill="#1e293b" />
+                        <!-- Gövde -->
+                        <circle cx="100" cy="100" r="40" fill="#f8fafc" />
+                        <circle cx="75" cy="95" r="25" fill="#f8fafc" />
+                        <circle cx="125" cy="95" r="25" fill="#f8fafc" />
+                        <circle cx="100" cy="125" r="30" fill="#f8fafc" />
+                        <!-- Kafa -->
+                        <rect x="80" y="75" width="40" height="35" rx="18" fill="#fbcfe8" />
+                        <!-- Gözler (Mutlu/Gülümseyen) -->
+                        <path d="M88 90 Q92 94 92 90" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none" />
+                        <path d="M108 90 Q112 94 112 90" stroke="#0f172a" stroke-width="2.5" stroke-linecap="round" fill="none" />
+                        <!-- Kulaklar -->
+                        <path d="M82 78 C70 70, 70 85, 82 82" fill="#f472b6" />
+                        <path d="M118 78 C130 70, 130 85, 118 82" fill="#f472b6" />
+                        <!-- Taç/Çiçek Süsü (Bayramlık) -->
+                        <circle cx="100" cy="70" r="4" fill="#fbbf24" />
+                        <circle cx="94" cy="72" r="4" fill="#ec4899" />
+                        <circle cx="106" cy="72" r="4" fill="#3b82f6" />
+                    </svg>
+                </div>
+
+                <!-- Özel Eda Aydın İmzası -->
+                <div class="mb-4">
+                    <h3 class="handwritten-font text-4xl text-amber-400 drop-shadow-md">Eda Aydın</h3>
+                    <p class="text-[10px] tracking-[0.4em] uppercase text-amber-200/50 -mt-1">Sevgi ve Saygılarımla</p>
+                </div>
+
+                <!-- Büyük Bayram Başlığı -->
+                <h2 class="serif-font text-2xl md:text-3xl text-amber-100 font-bold mb-4">
+                    Kurban Bayramınız Mübarek Olsun
+                </h2>
+
+                <!-- İçerik Mesajı -->
+                <p class="text-amber-100/90 text-sm md:text-base leading-relaxed font-light mb-6 px-2">
+                    "Bu mübarek günde kalpleriniz huzurla, sofralarınız bereketle dolsun. Sevdiklerinizle bir arada, sağlık ve mutluluk dolu nice güzel bayramlar geçirmeniz dileğiyle."
+                </p>
+
+                <!-- Zaman İlerleme Çubuğu & Yürüyen Kuzu Konsepti -->
+                <div id="timerWrapper" class="w-full relative mb-8">
+                    <!-- Yürüyen Kuzu Göstergesi -->
+                    <div id="progressBarSheep" class="absolute -top-6 left-0 transition-all duration-100 linear transform -translate-x-1/2 walking-sheep">
+                        <svg class="w-8 h-8 text-amber-400" viewBox="0 0 64 64" fill="currentColor">
+                            <!-- Küçük basit kuzu silüeti -->
+                            <circle cx="32" cy="32" r="14" fill="#f8fafc"/>
+                            <circle cx="18" cy="30" r="8" fill="#f8fafc"/>
+                            <rect x="25" y="24" width="14" height="12" rx="6" fill="#fed7aa"/>
+                            <circle cx="28" cy="28" r="1" fill="#000"/>
+                            <rect x="28" y="42" width="3" height="8" fill="#1e293b"/>
+                            <rect x="36" y="42" width="3" height="8" fill="#1e293b"/>
+                        </svg>
+                    </div>
+                    <!-- Arka Plan Barı -->
+                    <div class="w-full bg-emerald-950/60 rounded-full h-2 overflow-hidden border border-amber-500/20">
+                        <div id="progressBar" class="bg-gradient-to-r from-amber-400 to-amber-600 h-full w-full transition-all duration-100 linear"></div>
+                    </div>
+                </div>
+
+                <!-- Aksiyon Düğmeleri -->
+                <div id="actionButtons" class="flex gap-4 w-full opacity-0 transform translate-y-4 transition-all duration-500">
+                    <!-- Kapat Butonu -->
+                    <button onclick="closeCard()" class="flex-1 py-3 px-4 bg-emerald-900/60 hover:bg-emerald-900 text-amber-200 rounded-xl text-sm font-semibold border border-amber-500/30 active:scale-95 transition-transform">
+                        Kapat
+                    </button>
+                    <!-- Tekrar Oynat Butonu -->
+                    <button onclick="startCelebration()" class="flex-1 py-3 px-4 bg-gradient-to-r from-amber-500 to-amber-600 hover:from-amber-400 hover:to-amber-500 text-emerald-950 rounded-xl text-sm font-extrabold shadow-lg active:scale-95 transition-transform">
+                        Tekrar Göster ↺
+                    </button>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Koyun Sesleri & Fon Müziği Yönetim Scripti -->
+    <script>
+        let audioCtx = null;
+        let isMusicPlaying = false;
+        let ambientTimeout = null;
+
+        // Müzik kontrolü (Sakin ve Huzurlu "Bugün Bayram" Sentezleyicisi)
+        function toggleMusic() {
+            const musicIconOn = document.getElementById('musicIconOn');
+            const musicIconOff = document.getElementById('musicIconOff');
+
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+
+            if (isMusicPlaying) {
+                isMusicPlaying = false;
+                musicIconOn.classList.add('hidden');
+                musicIconOff.classList.remove('hidden');
+                if (ambientTimeout) {
+                    clearTimeout(ambientTimeout);
+                    ambientTimeout = null;
+                }
+            } else {
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                isMusicPlaying = true;
+                musicIconOn.classList.remove('hidden');
+                musicIconOff.classList.add('hidden');
+                playBugunBayramAmbient();
+            }
+        }
+
+        // Barış Manço - "Bugün Bayram Erken Kalkın Çocuklar" Melodisinin 
+        // Gerçek Zamanlı ve Ultra Sakin/Dinlendirici Müzik Kutusu Tarzında Sentezlenmesi
+        function playBugunBayramAmbient() {
+            // Nota Frekansları ve Süreleri (Sakin ve masalsı bir tempo için yavaşlatıldı)
+            const melody = [
+                { f: 440.00, d: 0.7 }, // La4 (Bu-)
+                { f: 493.88, d: 0.7 }, // Si4 (-gün)
+                { f: 523.25, d: 0.9 }, // Do5 (bay-)
+                { f: 523.25, d: 1.4 }, // Do5 (-ram)
+                
+                { f: 493.88, d: 0.7 }, // Si4 (er-)
+                { f: 523.25, d: 0.7 }, // Do5 (-ken)
+                { f: 587.33, d: 0.9 }, // Re5 (kal-)
+                { f: 587.33, d: 1.4 }, // Re5 (-kın)
+                
+                { f: 523.25, d: 0.6 }, // Do5 (ço-)
+                { f: 493.88, d: 0.6 }, // Si4 (-cuk-)
+                { f: 440.00, d: 0.6 }, // La4 (-lar)
+                { f: 415.30, d: 0.6 }, // Sol#4 (gi-)
+                { f: 440.00, d: 2.8 }  // La4 (-yin)
+            ];
+
+            let noteIdx = 0;
+
+            function playNextNote() {
+                if (!isMusicPlaying) return;
+
+                const note = melody[noteIdx];
+                const now = audioCtx.currentTime;
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                const filter = audioCtx.createBiquadFilter();
+
+                // Yumuşak, rüya gibi bir müzik kutusu / tüy tınısı için Saf Sine Wave tercih edildi
+                osc.type = 'sine';
+                osc.frequency.setValueAtTime(note.f, now);
+
+                // Dijital çınlamayı tamamen kesmek ve kulağı dinlendirmek için yumuşak lowpass filtre
+                filter.type = 'lowpass';
+                filter.frequency.setValueAtTime(550, now);
+
+                // Satie tarzı yavaş vuruş ve uzun sönümlenme süresi (Reverb simülasyonu)
+                gain.gain.setValueAtTime(0, now);
+                gain.gain.linearRampToValueAtTime(0.09, now + 0.12); // Melodi ses seviyesi biraz daha yükseltildi (0.045 -> 0.09)
+                gain.gain.exponentialRampToValueAtTime(0.0001, now + note.d * 1.6);
+
+                osc.connect(filter);
+                filter.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                osc.start(now);
+                osc.stop(now + note.d * 1.6);
+
+                // Bir sonraki notaya geçiş süresini hesapla (milisaniye cinsinden)
+                const delay = note.d * 850; 
+                noteIdx = (noteIdx + 1) % melody.length;
+
+                // Melodi tamamen bittiğinde diğer döngüye geçmeden önce 3.5 saniyelik harika bir "nefes alma/sessizlik" boşluğu bırakır
+                const nextDelay = (noteIdx === 0) ? delay + 3500 : delay;
+
+                ambientTimeout = setTimeout(playNextNote, nextDelay);
+            }
+
+            playNextNote();
+        }
+
+        // Giriş Koyununa Tıklandığında Tetiklenen Zıplama ve Gerçekçi "Mee" Sesi
+        function makeSheepJump() {
+            const sheep = document.getElementById('introSheep');
+            
+            sheep.style.animation = 'none';
+            sheep.offsetHeight; // Reflow tetikle
+            sheep.style.animation = 'sheep-bounce 0.5s ease-in-out';
+
+            playMeeSound();
+
+            setTimeout(() => {
+                sheep.style.animation = 'sheep-bounce 2.5s infinite ease-in-out';
+            }, 500);
+        }
+
+        // Kart İçindeki Küçük Koyun İçin Zıplama
+        function makeCardSheepJump() {
+            const sheep = document.getElementById('cardSheep');
+            sheep.style.transform = 'translateY(-10px) scale(1.05)';
+            playMeeSound();
+            setTimeout(() => {
+                sheep.style.transform = 'translateY(0) scale(1)';
+            }, 300);
+        }
+
+        // Geliştirilmiş ve Gerçekçi Koyun "Meeee-e-e" Sesi Sentezleyici (LFO ile Vibrato Efekti)
+        function playMeeSound() {
+            try {
+                if (!audioCtx) {
+                    audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+                }
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+                
+                const now = audioCtx.currentTime;
+                
+                const osc1 = audioCtx.createOscillator();
+                const osc2 = audioCtx.createOscillator();
+                const filter = audioCtx.createBiquadFilter();
+                const mainGain = audioCtx.createGain();
+                
+                // Vibrato (Melemedeki titrek kuzu efekti için LFO dalgası)
+                const lfo = audioCtx.createOscillator();
+                const lfoGain = audioCtx.createGain();
+                
+                lfo.frequency.value = 11.5; // Koyun melemesi için ideal titreme frekansı (11.5 Hz)
+                lfoGain.gain.value = 15;     // Ses frekansı üzerindeki dalgalanma gücü
+                
+                // Ana ses dalgaları (Hafif genizsel/nazal tını vermesi için sawtooth ve triangle birleşimi)
+                osc1.type = 'sawtooth';
+                osc1.frequency.setValueAtTime(290, now);
+                osc1.frequency.exponentialRampToValueAtTime(325, now + 0.12);
+                osc1.frequency.exponentialRampToValueAtTime(250, now + 0.65);
+                
+                osc2.type = 'triangle';
+                osc2.frequency.setValueAtTime(293, now);
+                osc2.frequency.exponentialRampToValueAtTime(328, now + 0.12);
+                osc2.frequency.exponentialRampToValueAtTime(253, now + 0.65);
+
+                // Bant geçiren filtre ile kuzu sesindeki o burun tınısı (nasal tone) yakalanır
+                filter.type = 'bandpass';
+                filter.frequency.setValueAtTime(950, now);
+                filter.Q.value = 1.3;
+
+                // LFO modülasyonunu osilatörlerin frekanslarına bağlayarak gerçekçi "meee-e" elde etme
+                lfo.connect(lfoGain);
+                lfoGain.connect(osc1.frequency);
+                lfoGain.connect(osc2.frequency);
+                
+                // Ses şiddeti zarfı (Envelope) - Hızlı yükseliş, titrek düzlük ve yumuşak bitiş
+                mainGain.gain.setValueAtTime(0, now);
+                mainGain.gain.linearRampToValueAtTime(0.24, now + 0.04);
+                mainGain.gain.setValueAtTime(0.24, now + 0.2);
+                mainGain.gain.exponentialRampToValueAtTime(0.001, now + 0.75);
+                
+                osc1.connect(filter);
+                osc2.connect(filter);
+                filter.connect(mainGain);
+                mainGain.connect(audioCtx.destination);
+                
+                lfo.start(now);
+                osc1.start(now);
+                osc2.start(now);
+                
+                lfo.stop(now + 0.75);
+                osc1.stop(now + 0.75);
+                osc2.stop(now + 0.75);
+            } catch (e) {
+                console.log("Koyun meleme sesi sentezlenemedi.", e);
+            }
+        }
+
+        // Konfeti ve Sevgi Efektleri
+        function triggerCelebrationEffects() {
+            const duration = 3 * 1000;
+            const end = Date.now() + duration;
+
+            (function frame() {
+                confetti({
+                    particleCount: 4,
+                    angle: 60,
+                    spread: 60,
+                    origin: { x: 0, y: 0.85 },
+                    colors: ['#fbbf24', '#f59e0b', '#ec4899', '#f472b6', '#ffffff']
+                });
+                confetti({
+                    particleCount: 4,
+                    angle: 120,
+                    spread: 60,
+                    origin: { x: 1, y: 0.85 },
+                    colors: ['#fbbf24', '#f59e0b', '#ec4899', '#f472b6', '#ffffff']
+                });
+
+                if (Date.now() < end) {
+                    requestAnimationFrame(frame);
+                }
+            }());
+        }
+
+        let countdownInterval;
+
+        // Bayram Kutlamasını Başlatan Ana Fonksiyon (Flowchart Takipçisi)
+        function startCelebration() {
+            clearInterval(countdownInterval);
+
+            // 1. ADIM: Başlangıç ekranını pürüzsüzce kapat
+            const startScreen = document.getElementById('startScreen');
+            startScreen.classList.add('scale-50', 'opacity-0');
+            setTimeout(() => {
+                startScreen.classList.add('hidden');
+            }, 500);
+
+            // 2. ADIM: Animasyon / Işık Efektini Başlat
+            const lightBurst = document.getElementById('lightBurst');
+            lightBurst.classList.remove('scale-0', 'opacity-0');
+            lightBurst.classList.add('scale-150', 'opacity-80');
+            
+            setTimeout(() => {
+                lightBurst.classList.remove('scale-150', 'opacity-80');
+                lightBurst.classList.add('scale-0', 'opacity-0');
+            }, 600);
+
+            const messageCard = document.getElementById('messageCard');
+            const actionButtons = document.getElementById('actionButtons');
+            const progressBar = document.getElementById('progressBar');
+            const progressBarSheep = document.getElementById('progressBarSheep');
+            
+            // 3. ADIM: Kurban Bayramı Mesajını Göster
+            setTimeout(() => {
+                messageCard.classList.remove('hidden');
+                setTimeout(() => {
+                    messageCard.classList.remove('scale-50', 'opacity-0');
+                    messageCard.classList.add('scale-100', 'opacity-100');
+                    
+                    // 4. ADIM: Müzik ve Kutlama Efektini Çalıştır
+                    if (!isMusicPlaying) {
+                        toggleMusic();
+                    }
+                    triggerCelebrationEffects();
+
+                    // İlerleme çubuğunu ve kuzu konumunu kur
+                    progressBar.style.width = '100%';
+                    progressBarSheep.style.left = '100%';
+                    actionButtons.classList.add('opacity-0', 'translate-y-4');
+
+                    // 5. ADIM: 5 Saniye Bekle (Zamanlayıcıyı Güncelle)
+                    let elapsed = 0;
+                    const totalDuration = 5000; // 5 saniye
+                    const step = 50; // 50 ms aralıklarla güncelle
+
+                    countdownInterval = setInterval(() => {
+                        elapsed += step;
+                        let percentage = 100 - (elapsed / totalDuration) * 100;
+                        if (percentage < 0) percentage = 0;
+
+                        progressBar.style.width = percentage + '%';
+                        progressBarSheep.style.left = percentage + '%';
+
+                        if (elapsed >= totalDuration) {
+                            clearInterval(countdownInterval);
+                            
+                            // 6. ADIM: Mesajı Kapat veya Tekrar Butonunu Göster
+                            actionButtons.classList.remove('opacity-0', 'translate-y-4');
+                            actionButtons.classList.add('opacity-100', 'translate-y-0');
+                        }
+                    }, step);
+
+                }, 50);
+            }, 400);
+        }
+
+        // Kartı Kapatma ve İlk Ekrana Geri Dönme
+        function closeCard() {
+            const messageCard = document.getElementById('messageCard');
+            const startScreen = document.getElementById('startScreen');
+
+            messageCard.classList.remove('scale-100', 'opacity-100');
+            messageCard.classList.add('scale-50', 'opacity-0');
+
+            setTimeout(() => {
+                messageCard.classList.add('hidden');
+                startScreen.classList.remove('hidden');
+                setTimeout(() => {
+                    startScreen.classList.remove('scale-50', 'opacity-0');
+                    startScreen.classList.add('scale-100', 'opacity-100');
+                }, 50);
+            }, 500);
+        }
+    </script>
+</body>
+</html>
